@@ -15,15 +15,20 @@ class Hangman():
 
     def game(self):
         self.hide_word()
+        self.wrong_guess = []
         while self.attempts != 0:
             print(f'\n{"  ".join(self.hidden_word)}')
             print(f"GUESSES LEFT: {self.attempts}")
+            if self.wrong_guess:
+                print(f'ATTEMPTS: {" ".join(self.wrong_guess)}')
             self.guess = input("Guess a letter: ")
             self.guess = self.guess.lower()
-            while self.guess.isdigit() or len(self.guess) > 1 or self.guess == "":
+            while not self.guess.isalpha() or len(self.guess) > 1 or self.guess == "":
                 print("\n>>> INVALID INPUT <<<")
                 print("  ".join(self.hidden_word))
                 print(f"GUESSES LEFT: {self.attempts}")
+                if self.wrong_guess:
+                    print(f'ATTEMPTS: {" ".join(self.wrong_guess)}')
                 self.guess = input("Guess a letter: ")
                 self.guess = self.guess.lower()
             self.check_guess()
@@ -56,6 +61,10 @@ class Hangman():
         if self.guess not in self.word_list:
             self.attempts -= 1
             print("\n>>> INCORRECT <<<")
+            if self.guess not in self.wrong_guess:
+                self.wrong_guess.append(self.guess)
+            else:
+                print(">>> PICK ANOTHER LETTER <<<")
         else:
             for letter in self.word_list:
                 if letter == self.guess:
